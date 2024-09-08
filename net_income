@@ -1,0 +1,45 @@
+double calculateNetIncome(double revenue, double costOfGoodsSold, double operatingExpenses, double taxRate) {
+    if (taxRate < 0 || taxRate > 1) {
+        throw std::invalid_argument("Tax rate must be between 0 and 1");
+    }
+
+    if (revenue < 0 || costOfGoodsSold < 0 || operatingExpenses < 0) {
+        throw std::invalid_argument("Revenue, cost of goods sold, and operating expenses must be non-negative");
+    }
+
+    double grossProfit = revenue - costOfGoodsSold;
+    double operatingProfit = grossProfit - operatingExpenses;
+    double taxAmount = operatingProfit * taxRate;
+    double netIncome = operatingProfit - taxAmount;
+
+    return netIncome;
+}
+
+void getFinancialInputs(double& revenue, double& costOfGoodsSold, double& operatingExpenses, double& taxRate) {
+    auto getPositiveInput = [](const std::string& prompt) {
+        double value;
+        while (true) {
+            std::cout << prompt;
+            if (std::cin >> value && value >= 0) {
+                return value;
+            }
+            std::cout << "Invalid input. Please enter a non-negative number.\n";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        }
+    };
+
+    revenue = getPositiveInput("Enter revenue (millions): $");
+    costOfGoodsSold = getPositiveInput("Enter cost of goods sold (millions): $");
+    operatingExpenses = getPositiveInput("Enter operating expenses (millions): $");
+
+    while (true) {
+        std::cout << "Enter tax rate (0-1): ";
+        if (std::cin >> taxRate && taxRate >= 0 && taxRate <= 1) {
+            break;
+        }
+        std::cout << "Invalid input. Please enter a number between 0 and 1.\n";
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+}
